@@ -21,17 +21,63 @@
         </div>
     </div>
     <div class="container">
+        {{> formula}}
+    </div>
+    <div class="container">
         {{> mash-in}}
     </div>
 </body>
 
+<template name="formula">
+    <h2>Grain Bill</h2>
+    {{> grain-bill-add}}
+    {{> grain-bill-list}}
+</template>
+
+<template name="grain-bill-add">
+<div class="row">
+    <div class="span6">
+        <form class="form-inline">
+            <div class="input-prepend">
+                <span class="add-on">Grain:</span><input type="text" id="new-item" />
+            </div>
+            <div class="input-append">
+                <input type="text" id="new-item-amount" class="span1" size="8"/><span class="add-on">lbs</span>
+            </div>
+            <button type="button" id="gb-add" class="btn btn-primary"><i class="icon-plus icon-white"></i>Add</button>
+        </form>
+    </div>
+    <div class="span6">
+    </div>
+</div>
+</template>
+
+<template name="grain-bill-list">
+<div class="row">
+    <div class="span6">
+        <table class="table table-striped table-condensed">
+            <thead>
+                <tr><th>Grain</th><th>Amount (lbs)</th></tr>
+            </thead>
+            <tbody>
+                {{#each bill}}
+                    {{> grain-bill-list-item}}
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</div>
+</template>
+
+<template name="grain-bill-list-item">
+    <tr>
+        <td>{{grain}}</td>
+        <td>{{amount}}</td>
+    </tr>
+</template>
+
 <template name="mash-in">
     <h2>Mash-In</h2>
-    <div class="row">
-        <div class="span12 center">
-            <span class="formula-head">Tw = (.2/R)(T2 - T1) + T2</span>
-        </div>
-    </div>
     <div class="row">
         <div class="span6">
             <form class="form-horizontal">
@@ -40,21 +86,27 @@
                         <label class="control-label" for="mash-r">R</label>
                         <div class="controls"> 
                             <input id="mash-r" type="text" class="input-small" value="{{mash-r}}" />
-                            <p class="help-block">ratio of water to grain in quarts per pound</p>
+                            <p class="help-inline">Ratio of water to grain in quarts per pound.</p>
                         </div>
                     </div>
                     <div class="control-group">
                         <label class="control-label" for="mash-r">T1</label>
                         <div class="controls"> 
                             <input id="mash-t1" type="text" class="input-small" value="{{mash-t1}}" />
-                            <p class="help-block">the temperature of the grains</p>
+                            <p class="help-inline">The temperature of the grains.</p>
                         </div>
                     </div>
                     <div class="control-group">
                         <label class="control-label" for="mash-r">T2</label>
                         <div class="controls"> 
                             <input id="mash-t2" type="text" class="input-small" value="{{mash-t2}}" />
-                            <p class="help-block">target temperature of the mash</p>
+                            <p class="help-inline">Target temperature of the mash.</p>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="mash-r">Tw</label>
+                        <div class="controls"> 
+                            <p class="help-inline">Temperature of the water to add to the mash.</p>
                         </div>
                     </div>
             </fieldset>
@@ -62,14 +114,11 @@
         </div>
     </div>
     <div class="row">
-        <div class="span6 offset6">
+        <div class="span6">
+            <span class="formula-head">Tw = (.2/R)(T2 - T1) + T2</span>
+        </div>
+        <div class="span6">
             <h1 class="formula-result">Tw={{Tw}}</h1>
         </div>
     </div>
-</template>
-
-<template name="hello">
-  <h1>Hello World!</h1>
-  {{greeting}}
-  <input type="button" value="Click" />
 </template>
