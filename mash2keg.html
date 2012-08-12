@@ -21,6 +21,9 @@
         </div>
     </div>
     <div class="container">
+        {{> brew-name}}
+    </div>
+    <div class="container">
         {{> formula}}
     </div>
     <div class="container">
@@ -28,10 +31,16 @@
     </div>
 </body>
 
+<template name="brew-name">
+    <p class="lead">Today we'll be brewing...<input type="text" class="input-mini"> gallons of <input type="text"></p>
+</template>
+
 <template name="formula">
     <h2>Grain Bill</h2>
     {{> grain-bill-add}}
     {{> grain-bill-list}}
+    <h2>Mash Water</h2>
+    {{> mash-water}}
 </template>
 
 <template name="grain-bill-add">
@@ -39,7 +48,7 @@
     <div class="span6">
         <form class="form-inline">
             <div class="input-prepend">
-                <span class="add-on">Grain:</span><input type="text" id="new-item" />
+                <span class="add-on">Type:</span><input type="text" id="new-item" />
             </div>
             <div class="input-append">
                 <input type="text" id="new-item-amount" class="span1" size="8"/><span class="add-on">lbs</span>
@@ -53,27 +62,34 @@
 </template>
 
 <template name="grain-bill-list">
-<div class="row">
-    <div class="span6">
-        <table class="table table-striped table-condensed">
-            <thead>
-                <tr><th>Grain</th><th>Amount (lbs)</th></tr>
-            </thead>
-            <tbody>
-                {{#each bill}}
-                    {{> grain-bill-list-item}}
-                {{/each}}
-            </tbody>
-        </table>
+    <div class="row">
+        <div class="span6">
+            <table class="table table-striped table-condensed">
+                <thead>
+                    <tr><th>Type</th><th>Amount (lbs)</th><th></th></tr>
+                </thead>
+                <tbody>
+                    {{#each bill}}
+                        {{> grain-bill-list-item}}
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
 </template>
 
 <template name="grain-bill-list-item">
     <tr>
         <td>{{grain}}</td>
         <td>{{amount}}</td>
+        <td><i id="remove-item" class="icon-remove"></i></td>
     </tr>
+</template>
+
+<template name="mash-water">
+    <div class="input-append">
+        <input type="text" id="new-item" /><span class="add-on">qts</span>
+    </div>
 </template>
 
 <template name="mash-in">

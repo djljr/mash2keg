@@ -24,6 +24,12 @@ if (Meteor.is_client) {
         return GrainBill.find({});
     };
 
+    Template['grain-bill-list'].events = {
+        'click #remove-item': function() {
+            GrainBill.remove(this._id);
+        }
+    };
+
     Template['mash-in'].events = {
         'change #mash-r': function(e) {
             Session.set("mash-r", $(e.target).val());
