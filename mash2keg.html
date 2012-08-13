@@ -87,8 +87,22 @@
 </template>
 
 <template name="mash-water">
-    <div class="input-append">
-        <input type="text" id="new-item" /><span class="add-on">qts</span>
+    <div class="control-group">
+        <label class="radio">
+            <input id="water-1.5" type="radio" name="water-amount"/>
+            <span id="amount-1.5">0</span> qt (1.5 qt/lb)
+        </label>
+        <label class="radio">
+            <input id="water-2.0" type="radio" name="water-amount" />
+            <span id="amount-2.0">0</span> qt (2.0 qt/lb)
+        </label>
+        <label class="radio">
+            <input id="water-custom" type="radio" name="water-amount" />
+            custom
+        </label>
+        <div class="input-append">
+            <input class="input-mini disabled" disabled="" type="text" id="amount-custom" /><span class="add-on">qts</span>
+        </div>
     </div>
 </template>
 
