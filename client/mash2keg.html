@@ -70,7 +70,7 @@
     {{> grainBillAdd}}
     {{> grainBillList}}
     <h2>Mash Water</h2>
-    {{> mash-water}}
+    {{> mashWater}}
 </template>
 
 <template name="grainBillAdd">
@@ -116,24 +116,26 @@
     </tr>
 </template>
 
-<template name="mash-water">
+<template name="mashWater">
+    {{#if unset}}
     <div class="control-group">
         <label class="radio">
-            <input id="water-1.5" type="radio" name="water-amount-sel" />
-            <span id="amount-1.5">0</span> qts (1.5 qts/lb)
+            <input type="radio" name="water-amount" value="{{precomputed.onePointTwoFive}}" />
+            {{precomputed.onePointTwoFive}} qts (1.25 qts/lb)
         </label>
         <label class="radio">
-            <input id="water-2.0" type="radio" name="water-amount-sel" />
-            <span id="amount-2.0">0</span> qts (2.0 qts/lb)
+            <input type="radio" name="water-amount" value="{{precomputed.onePointFive}}" />
+            {{precomputed.onePointFive}} qts (1.5 qts/lb)
         </label>
-        <label class="radio">
-            <input id="water-custom" type="radio" name="water-amount-sel" />
-            custom
-        </label>
-        <div class="input-append">
-            <input class="input-mini disabled" disabled="" type="text" id="water-amount" /><span class="add-on">qts</span>
+        <button type="button" id="water-set" class="btn btn-primary">Set</button>
+    </div>
+    {{else}}
+    <div class="row">
+        <div class="span6">
+            <p class="lead">{{amount}} qts.<button type="button" id="water-unset" class="btn btn-mini">Unset</button></p>
         </div>
     </div>
+    {{/if}}
 </template>
 
 <template name="mash-in">

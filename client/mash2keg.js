@@ -66,6 +66,39 @@ Template.grainBillList.events({
     }
 });
 
+Template.mashWater.precomputed = function() {
+    var grainWeight = _.reduce(formula().bill, function(weight, billItem) {
+       return weight + parseInt(billItem.amount);
+    }, 0);
+
+    var precomputed = {};
+    precomputed.onePointTwoFive = grainWeight * 1.25 || 0; 
+    precomputed.onePointFive = grainWeight * 1.5 || 0; 
+
+    return precomputed;
+};
+
+Template.mashWater.unset = function() {
+    return !formula().mashWater;
+};
+
+Template.mashWater.amount = function() {
+    return formula().mashWater;
+}
+
+Template.mashWater.events({
+    'click #water-set': function() {
+        var amount = $('input[name=water-amount]:checked').val()
+        if(amount) {
+            Formulas.update(formula()._id, {$set: {mashWater: amount}});
+        }
+    },
+    'click #water-unset': function() {
+        Formulas.update(formula()._id, {$unset: {mashWater: 1}});
+    }
+});
+
+
 /*
 Template['grain-bill-add'].events = {
     'click #gb-add': function() {
