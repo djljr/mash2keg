@@ -1,17 +1,78 @@
-Session.set("mash-r", 0);
-Session.set("mash-t1", 0);
-Session.set("mash-t2", 0);
+
+var formula = function() {
+    return Formulas.findOne(Session.get('formula_id'));
+};
+
 var single_infusion_mash = function(r, t1, t2) {
     return (0.2 / r) * (t2 - t1) + t2;
 };
 
+Template.page.preserve({
+    'input[id]': function (n) { 
+      return n.id; 
+    },
+});
+
+Template.formulaList.show = function() {
+    return !formula();
+};
+
+Template.formulaList.formulas = function() {
+    return Formulas.find({});
+};
+
+Template.formulaList.events({
+    'click button#addFormula': function() {
+        var formula_id = Formulas.insert({'created': new Date()});
+        Session.set('formula_id', formula_id);
+    }
+});
+
+Template.formulaEdit.show = function() {
+    return !!formula();
+};
+
+Template.formulaEdit.formula = function() {
+    return formula();
+};
+
+Template.formulaEdit.events({
+    'keyup input#amount': function(evt) {
+        var amount = $('#edit input#amount').val().trim();
+        Formulas.update(formula()._id, {$set: {amount: amount}});
+    },
+    'keyup input#name': function(evt) {
+        var name = $('#edit input#name').val().trim();
+        Formulas.update(formula()._id, {$set: {name: name}});
+    }
+});
+
+Template.grainBillAdd.events({
+    'click button#gb-add': function(evt) {
+        var bill = formula().bill;
+        if(!bill) { bill = []; }
+        bill.push({grain: $('#new-item').val(), amount: $('#new-item-amount').val()});
+        Formulas.update(formula()._id, {$set: {bill: bill}});
+    }
+});
+
+Template.grainBillList.bill = function() {
+    return formula().bill;
+};
+
+Template.grainBillList.events({
+    'click #remove-item': function() {
+        Formulas.update(formula()._id, {$pull: {bill: {grain: this.grain, amount: this.amount}}});
+    }
+});
+
+/*
 Template['grain-bill-add'].events = {
     'click #gb-add': function() {
         GrainBill.insert({
             grain: $('#new-item').val(), 
             amount: $('#new-item-amount').val()
         });
-
 
         $('#new-item').val(""); 
         $('#new-item-amount').val("");
@@ -55,3 +116,4 @@ Template['mash-in']['mash-t1'] = function() {
 Template['mash-in']['mash-t2'] = function() {
     return Session.get("mash-t2");
 };
+*/
