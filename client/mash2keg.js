@@ -3,10 +3,6 @@ var formula = function() {
     return Formulas.findOne(Session.get('formula_id'));
 };
 
-var single_infusion_mash = function(r, t1, t2) {
-    return (0.2 / r) * (t2 - t1) + t2;
-};
-
 Template.page.preserve({
     'input[id]': function (n) { 
       return n.id; 
@@ -56,6 +52,12 @@ Template.grainBillAdd.events({
     }
 });
 
+var grainBillWeight = function() {
+    return _.reduce(formula().bill, function(weight, billItem) {
+       return weight + parseInt(billItem.amount);
+    }, 0);
+};
+
 Template.grainBillList.bill = function() {
     return formula().bill;
 };
@@ -66,11 +68,12 @@ Template.grainBillList.events({
     }
 });
 
-Template.mashWater.precomputed = function() {
-    var grainWeight = _.reduce(formula().bill, function(weight, billItem) {
-       return weight + parseInt(billItem.amount);
-    }, 0);
+Template.grainBillList.totalWeight = function() {
+    return grainBillWeight();
+};
 
+Template.mashWater.precomputed = function() {
+    var grainWeight = grainBillWeight();
     var precomputed = {};
     precomputed.onePointTwoFive = grainWeight * 1.25 || 0; 
     precomputed.onePointFive = grainWeight * 1.5 || 0; 
@@ -79,25 +82,66 @@ Template.mashWater.precomputed = function() {
 };
 
 Template.mashWater.unset = function() {
-    return !formula().mashWater;
+    return !formula().mash || !formula().mash.ratio;
 };
 
 Template.mashWater.amount = function() {
-    return formula().mashWater;
-}
+    return formula().mash.ratio * grainBillWeight();
+};
 
 Template.mashWater.events({
     'click #water-set': function() {
-        var amount = $('input[name=water-amount]:checked').val()
-        if(amount) {
-            Formulas.update(formula()._id, {$set: {mashWater: amount}});
+        var ratio = $('input[name=water-ratio]:checked').val()
+        if(ratio) {
+            Formulas.update(formula()._id, {$set: {mash: { ratio: ratio }}});
         }
     },
     'click #water-unset': function() {
-        Formulas.update(formula()._id, {$unset: {mashWater: 1}});
+        Formulas.update(formula()._id, {$unset: {mash: 1}});
     }
 });
 
+Template.mashIn.mash = function() {
+    var mash = formula().mash;
+    if(mash) {
+        mash = {ratio: parseFloat(mash.ratio), grainTemp: parseFloat(mash.grainTemp), targetTemp: parseFloat(mash.targetTemp)};
+        if(!mash.ratio || mash.ratio === 0) {
+            return 0;
+        }
+        if(!mash.grainTemp) {
+            mash.grainTemp = 0;
+        }
+        if(!mash.targetTemp) {
+            mash.targetTemp = 0;
+        }
+    }
+
+    return mash;
+};
+
+var singleInfusionMash = function(r, t1, t2) {
+    return (0.2 / r) * (t2 - t1) + t2;
+};
+
+Template.mashIn.waterTemp = function() {
+    var mash = Template.mashIn.mash();
+    return singleInfusionMash(mash.ratio, mash.grainTemp, mash.targetTemp);
+};
+
+Template.mashIn.events({
+    'keyup input#mash-t1': function(evt) {
+        var temp = $('#mashTemp input#mash-t1').val().trim();
+        var mash = formula().mash;
+        mash.grainTemp = temp;
+        Formulas.update(formula()._id, {$set: {mash: mash}});
+    },
+    'keyup input#mash-t2': function(evt) {
+        var temp = $('#mashTemp input#mash-t2').val().trim();
+        var mash = formula().mash;
+        mash.targetTemp = temp;
+        Formulas.update(formula()._id, {$set: {mash: mash}});
+    }
+});
 
 /*
 Template['grain-bill-add'].events = {

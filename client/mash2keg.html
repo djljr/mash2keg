@@ -54,14 +54,15 @@
 <div class="container" id="edit">
     {{#if show}}
     <div class="row">
-        {{> brew-name}}
+        {{> brewName}}
     </div>
     {{> formula}}
+    {{> mashIn}}
     {{/if}}
 </div>
 </template>
 
-<template name="brew-name">
+<template name="brewName">
     <p class="lead">Today we'll be brewing...<input type="text" id="amount" class="input-mini" value="{{formula.amount}}" /> gallons of <input id="name" type="text" value="{{formula.name}}" /></p>
 </template>
 
@@ -103,6 +104,9 @@
                         {{> grain-bill-list-item}}
                     {{/each}}
                 </tbody>
+                <tfoot>
+                    <tr><td>Total</td><td>{{totalWeight}}</td><td></td></tr>
+                </tfoot>
             </table>
         </div>
     </div>
@@ -120,11 +124,11 @@
     {{#if unset}}
     <div class="control-group">
         <label class="radio">
-            <input type="radio" name="water-amount" value="{{precomputed.onePointTwoFive}}" />
+            <input type="radio" name="water-ratio" value="1.25" />
             {{precomputed.onePointTwoFive}} qts (1.25 qts/lb)
         </label>
         <label class="radio">
-            <input type="radio" name="water-amount" value="{{precomputed.onePointFive}}" />
+            <input type="radio" name="water-ratio" value="1.5" />
             {{precomputed.onePointFive}} qts (1.5 qts/lb)
         </label>
         <button type="button" id="water-set" class="btn btn-primary">Set</button>
@@ -132,55 +136,41 @@
     {{else}}
     <div class="row">
         <div class="span6">
-            <p class="lead">{{amount}} qts.<button type="button" id="water-unset" class="btn btn-mini">Unset</button></p>
+            <p class="lead">{{amount}} qts.<button type="button" id="water-unset" class="btn btn-mini btn-link">Unset</button></p>
         </div>
     </div>
     {{/if}}
 </template>
 
-<template name="mash-in">
+<template name="mashIn">
     <h2>Mash-In</h2>
     <div class="row">
         <div class="span6">
-            <form class="form-horizontal">
-                <fieldset>
-                    <div class="control-group">
-                        <label class="control-label" for="mash-r">R</label>
-                        <div class="controls"> 
-                            <input id="mash-r" type="text" class="input-small" value="{{mash-r}}" />
-                            <p class="help-inline">Ratio of water to grain in quarts per pound.</p>
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label" for="mash-r">T1</label>
-                        <div class="controls"> 
-                            <input id="mash-t1" type="text" class="input-small" value="{{mash-t1}}" />
-                            <p class="help-inline">The temperature of the grains.</p>
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label" for="mash-r">T2</label>
-                        <div class="controls"> 
-                            <input id="mash-t2" type="text" class="input-small" value="{{mash-t2}}" />
-                            <p class="help-inline">Target temperature of the mash.</p>
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label" for="mash-r">Tw</label>
-                        <div class="controls"> 
-                            <p class="help-inline">Temperature of the water to add to the mash.</p>
-                        </div>
-                    </div>
-            </fieldset>
-            </form>
+            <span>Tw = (.2/R)(T2 - T1) + T2</span>
         </div>
     </div>
-    <div class="row">
+    <div class="row" id="mashTemp">
         <div class="span6">
-            <span class="formula-head">Tw = (.2/R)(T2 - T1) + T2</span>
-        </div>
-        <div class="span6">
-            <h1 class="formula-result">Tw={{Tw}}</h1>
+            <div class="row">
+                <div class="span1 offset2">R</div>
+                <div class="span1">{{mash.ratio}}</div>
+                <div class="span2"><p class="help-inline">Ratio of water to grain in quarts per pound.</p></div>
+            </div>
+            <div class="row">
+                <div class="span1 offset2">T1</div>
+                <div class="span1"><input id="mash-t1" type="text" class="span1" value="{{mash.grainTemp}}"/></div>
+                <div class="span2"><p class="help-inline">The starting temperature of the grains.</p></div>
+            </div>
+            <div class="row">
+                <div class="span1 offset2">T2</div>
+                <div class="span1"><input id="mash-t2" type="text" class="span1" value="{{mash.targetTemp}}" /></div>
+                <div class="span2"><p class="help-inline">Target temperature of the mash.</p></div>
+            </div>
+            <div class="row">
+                <div class="span1 offset2">Tw</div>
+                <div class="span1">{{waterTemp}}</div>
+                <div class="span2"><p class="help-inline">Temperature of the water to add to the mash.</p></div>
+            </div>
         </div>
     </div>
 </template>
