@@ -56,21 +56,27 @@
     <div class="row">
         {{> brewName}}
     </div>
+    <h1>Formula</h1>
     {{> formula}}
+    <h1>Mash</h1>
     {{> mashIn}}
+    {{> mash}}
+    <h1>Lauter</h1>
+    {{> mashOut}}
+    {{> sparge}}
     {{/if}}
 </div>
 </template>
 
 <template name="brewName">
-    <p class="lead">Today we'll be brewing...<input type="text" id="amount" class="input-mini" value="{{formula.amount}}" /> gallons of <input id="name" type="text" value="{{formula.name}}" /></p>
+    <p class="lead">Today we'll be brewing...<input type="text" id="amount" class="input-mini" value="{{formula.amount}}" {{mashDisabled}}/> gallons of <input id="name" type="text" value="{{formula.name}}" {{mashDisabled}}/></p>
 </template>
 
 <template name="formula">
-    <h2>Grain Bill</h2>
+    <h3>Grain Bill</h3>
     {{> grainBillAdd}}
     {{> grainBillList}}
-    <h2>Mash Water</h2>
+    <h3>Mash Water</h3>
     {{> mashWater}}
 </template>
 
@@ -79,12 +85,12 @@
     <div class="span6">
         <form class="form-inline">
             <div class="input-prepend">
-                <span class="add-on">Type:</span><input type="text" id="new-item"/>
+                <span class="add-on">Type:</span><input type="text" id="new-item" {{mashDisabled}} />
             </div>
             <div class="input-append">
-                <input type="text" id="new-item-amount" class="span1" size="8"/><span class="add-on">lbs</span>
+                <input type="text" id="new-item-amount" class="span1" size="8" {{mashDisabled}} /><span class="add-on">lbs</span>
             </div>
-            <button type="button" id="gb-add" class="btn btn-primary"><i class="icon-plus icon-white"></i>Add</button>
+            <button type="button" id="gb-add" class="btn btn-primary" {{mashDisabled}}><i class="icon-plus icon-white"></i>Add</button>
         </form>
     </div>
     <div class="span6">
@@ -136,14 +142,14 @@
     {{else}}
     <div class="row">
         <div class="span6">
-            <p class="lead">{{amount}} qts.<button type="button" id="water-unset" class="btn btn-mini btn-link">Unset</button></p>
+            <p class="lead">{{amount}} qts.<button type="button" id="water-unset" class="btn btn-mini btn-link" {{mashDisabled}}>Unset</button></p>
         </div>
     </div>
     {{/if}}
 </template>
 
 <template name="mashIn">
-    <h2>Mash-In</h2>
+    <h3>Mash-In</h3>
     <div class="row">
         <div class="span6">
             <span>Tw = (.2/R)(T2 - T1) + T2</span>
@@ -153,17 +159,17 @@
         <div class="span6">
             <div class="row">
                 <div class="span1 offset2">R</div>
-                <div class="span1">{{mash.ratio}}</div>
+                <div class="span1">{{mashInData.ratio}}</div>
                 <div class="span2"><p class="help-inline">Ratio of water to grain in quarts per pound.</p></div>
             </div>
             <div class="row">
                 <div class="span1 offset2">T1</div>
-                <div class="span1"><input id="mash-t1" type="text" class="span1" value="{{mash.grainTemp}}"/></div>
+                <div class="span1"><input id="mash-t1" type="text" class="span1" value="{{mashInData.grainTemp}}" {{mashDisabled}}/></div>
                 <div class="span2"><p class="help-inline">The starting temperature of the grains.</p></div>
             </div>
             <div class="row">
                 <div class="span1 offset2">T2</div>
-                <div class="span1"><input id="mash-t2" type="text" class="span1" value="{{mash.targetTemp}}" /></div>
+                <div class="span1"><input id="mash-t2" type="text" class="span1" value="{{mashInData.targetTemp}}" {{mashDisabled}}/></div>
                 <div class="span2"><p class="help-inline">Target temperature of the mash.</p></div>
             </div>
             <div class="row">
@@ -178,7 +184,47 @@
             Notes:
         </div>
         <div class="span3">
-            <textarea id="mash-notes" rows="4">{{mash.notes}}</textarea>
+            <textarea id="mash-notes" rows="4" {{mashDisabled}}>{{mash.notes}}</textarea>
         </div>
     </div>
+</template>
+
+<template name="mash">
+    <h3>Mash</h3>
+    {{#if started}}
+    {{> mashEvents}}
+    <div class="row">
+        <div class="span4">
+            <form class="form-inline">
+                <div class="input-prepend">
+                    <span class="add-on">Add Temperature Reading:</span><input type="text" id="mash-temp-add" class="span1" />
+                </div>
+                <button type="button" id="mash-temp-btn" class="btn btn-primary">Add</button>
+            </form>
+        </div>
+        <div class="span1"><button type="button" class="btn btn-success" id="finish-mash">Finish</button></div>
+    </div>
+    {{else}}
+        {{#if finished}}
+        {{> mashEvents}}
+        {{else}}
+        <button type="button" class="btn btn-primary" id="start-mash">Start</button>
+        {{/if}}
+    {{/if}}
+</template>
+
+<template name="mashEvents">
+    <div class="row"><div class="span1"><span class="label label-success">Started</span></div><div class="span4">at {{mash.startTime}}</div></div>
+    {{#each mashEvents}}
+    <div class="row"><div class="span1"><span class="label">{{type}}</span></div><div class="span2">at {{time}}</div><div class="span1">{{detail}}</div></div>
+    {{/each}}
+    {{#if mash.endTime}}<div class="row"><div class="span1"><span class="label label-success">Finished</span></div><div class="span4">at {{mash.endTime}}</div></div>{{/if}}
+</template>
+
+<template name="mashOut">
+    <h3>Mash-Out</h3>
+</template>
+
+<template name="sparge">
+    <h3>Sparge</h3>
 </template>

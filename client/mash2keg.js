@@ -55,7 +55,7 @@ Template.grainBillAdd.events({
 
 var grainBillWeight = function() {
     return _.reduce(formula().bill, function(weight, billItem) {
-       return weight + parseInt(billItem.amount);
+       return weight + parseFloat(billItem.amount);
     }, 0);
 };
 
@@ -83,12 +83,12 @@ Template.mashWater.precomputed = function() {
 };
 
 Template.mashWater.unset = function() {
-    return !formula().mash || !formula().mash.ratio;
+    return !formula().mashInData || !formula().mashInData.ratio;
 };
 
 Template.mashWater.amount = function() {
-    if(formula().mash && formula().mash.ratio) {
-        return formula().mash.ratio * grainBillWeight();
+    if(formula().mashInData && formula().mashInData.ratio) {
+        return formula().mashInData.ratio * grainBillWeight();
     }
 };
 
@@ -96,31 +96,31 @@ Template.mashWater.events({
     'click #water-set': function() {
         var ratio = $('input[name=water-ratio]:checked').val()
         if(ratio) {
-            Formulas.update(formula()._id, {$set: {mash: { ratio: ratio }}});
+            Formulas.update(formula()._id, {$set: {mashInData: { ratio: ratio }}});
         }
     },
     'click #water-unset': function() {
-        Formulas.update(formula()._id, {$unset: {mash: { ratio: 1 }}});
+        Formulas.update(formula()._id, {$unset: {mashInData: { ratio: 1 }}});
     }
 });
 
-Template.mashIn.mash = function() {
-    var mash = formula().mash;
-    if(mash) {
-        mash.ratio = parseFloat(mash.ratio);
-        if(isNaN(mash.ratio)) { mash.ratio = 0; }
+Template.mashIn.mashInData = function() {
+    var mashInData = formula().mashInData;
+    if(mashInData) {
+        mashInData.ratio = parseFloat(mashInData.ratio);
+        if(isNaN(mashInData.ratio)) { mashInData.ratio = 0; }
 
-        mash.grainTemp = parseFloat(mash.grainTemp);
-        if(isNaN(mash.grainTemp)) { mash.grainTemp = 0; }
+        mashInData.grainTemp = parseFloat(mashInData.grainTemp);
+        if(isNaN(mashInData.grainTemp)) { mashInData.grainTemp = 0; }
 
-        mash.targetTemp = parseFloat(mash.targetTemp);
-        if(isNaN(mash.targetTemp)) { mash.targetTemp = 0; }
+        mashInData.targetTemp = parseFloat(mashInData.targetTemp);
+        if(isNaN(mashInData.targetTemp)) { mashInData.targetTemp = 0; }
     }
     else {
-        mash = {ratio: 0, grainTemp: 0, targetTemp: 0}
+        mashInData = {ratio: 0, grainTemp: 0, targetTemp: 0}
     }
 
-    return mash;
+    return mashInData;
 };
 
 var singleInfusionMash = function(r, t1, t2) {
@@ -128,11 +128,11 @@ var singleInfusionMash = function(r, t1, t2) {
 };
 
 Template.mashIn.waterTemp = function() {
-    var mash = Template.mashIn.mash();
-    if(mash) {
-        if(mash.ratio === 0) { return 0;}
+    var mashInData = Template.mashIn.mashInData();
+    if(mashInData) {
+        if(mashInData.ratio === 0) { return 0;}
         else {
-            return singleInfusionMash(mash.ratio, mash.grainTemp, mash.targetTemp).toFixed(2);
+            return singleInfusionMash(mashInData.ratio, mashInData.grainTemp, mashInData.targetTemp).toFixed(2);
         }
     }
     else {
@@ -143,20 +143,74 @@ Template.mashIn.waterTemp = function() {
 Template.mashIn.events({
     'keyup input#mash-t1': function(evt) {
         var temp = $('#mashTemp input#mash-t1').val().trim();
-        var mash = formula().mash;
-        mash.grainTemp = temp;
-        Formulas.update(formula()._id, {$set: {mash: mash}});
+        var mashInData = formula().mashInData || {};
+        mashInData.grainTemp = temp;
+        Formulas.update(formula()._id, {$set: {mashInData: mashInData}});
     },
     'keyup input#mash-t2': function(evt) {
         var temp = $('#mashTemp input#mash-t2').val().trim();
-        var mash = formula().mash;
-        mash.targetTemp = temp;
-        Formulas.update(formula()._id, {$set: {mash: mash}});
+        var mashInData = formula().mashInData || {};
+        mashInData.targetTemp = temp;
+        Formulas.update(formula()._id, {$set: {mashInData: mashInData}});
     },
     'keyup textarea#mash-notes': function(evt) {
         var notes = $('textarea#mash-notes').val().trim();
+        var mashInData = formula().mashInData || {};
+        mashInData.notes = notes;
+        Formulas.update(formula()._id, {$set: {mashInData: mashInData}});
+    }
+});
+
+Template.mash.pastStarted = function() {
+    return Template.mash.started() || Template.mash.finished();
+}
+Template.mash.started = function() {
+    return !!formula().mash && !!formula().mash.startTime && !formula().mash.endTime;
+};
+
+Template.brewName.mashDisabled = function() {
+    return Template.mash.pastStarted() ? "disabled" : "";
+};
+Template.grainBillAdd.mashDisabled = function() {
+    return Template.mash.pastStarted() ? "disabled" : "";
+};
+Template.mashWater.mashDisabled = function() {
+    return Template.mash.pastStarted() ? "disabled" : "";
+};
+Template.mashIn.mashDisabled = function() {
+    return Template.mash.pastStarted() ? "disabled" : "";
+};
+Template.mash.finished = function() {
+    return !!formula().mash && !!formula().mash.endTime;
+};
+
+Template.mashEvents.mash = function() {
+    return formula().mash;
+};
+
+Template.mashEvents.mashEvents = function() {
+    return formula().mash.events; 
+}
+
+Template.mash.events({
+    'click button#start-mash': function() {
+        var mash = formula().mash || {};
+        mash.startTime = new Date();
+        Formulas.update(formula()._id, {$set: {mash: mash}});
+    },
+    'click button#mash-temp-btn': function() {
         var mash = formula().mash;
-        mash.notes = notes;
+        var events = mash.events || [];
+        events.push({type: "Temperature", time: new Date(), detail: $('#mash-temp-add').val()});
+        mash.events = events
+        Formulas.update(formula()._id, {$set: {mash: mash}});
+    },
+    'click button#finish-mash': function() {
+        var mash = formula().mash;
+        mash.endTime = new Date();
         Formulas.update(formula()._id, {$set: {mash: mash}});
     }
+});
+
+Meteor.startup(function() {
 });
