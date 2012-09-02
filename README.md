@@ -12,6 +12,10 @@ Mash
 * Strike water amounts & temperature
 * Track temperature throught the mash window
 
+Boil
+----
+* Hop Schedule
+
 Todo
 ====
 
@@ -26,7 +30,6 @@ Lautering
 
 Boil
 ----
-* Hop Schedule
 * Timer
 
 Primary Fermentation
