@@ -9,11 +9,11 @@ var formatDatePart = function(part) {
 };
 Handlebars.registerHelper("formatDate", function(date) {
     var date = new Date(date);
-    return date.getFullYear() + "-" + formatDatePart(date.getMonth() + 1) + "-" + formatDatePart(date.getDay()) + " " + date.getHours() + ":" + date.getMinutes()
+    return date.getFullYear() + "-" + formatDatePart(date.getMonth() + 1) + "-" + formatDatePart(date.getDate()) + " " + formatDatePart(date.getHours()) + ":" + formatDatePart(date.getMinutes());
 });
 Handlebars.registerHelper("formatDateWithSeconds", function(date) {
     var date = new Date(date);
-    return date.getFullYear() + "-" + formatDatePart(date.getMonth() + 1) + "-" + formatDatePart(date.getDay()) + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds()
+    return date.getFullYear() + "-" + formatDatePart(date.getMonth() + 1) + "-" + formatDatePart(date.getDate()) + " " + formatDatePart(date.getHours()) + ":" + formatDatePart(date.getMinutes()) + ":" + formatDatePart(date.getSeconds());
 });
 Template.page.preserve({
     'input[id]': function (n) { 
@@ -233,6 +233,60 @@ Template.mash.events({
         var mash = formula().mash;
         mash.endTime = new Date();
         Formulas.update(formula()._id, {$set: {mash: mash}});
+    }
+});
+
+Template.hopScheduleAdd.events({
+    'click button#hs-add': function(evt) {
+        var hopSchedule = formula().hopSchedule;
+        if(!hopSchedule) { hopSchedule = []; }
+        hopSchedule.push({ingredient: $('#hops-new-item').val(), amount: $('#hops-new-item-amount').val(), time: $('#hops-new-item-time').val()});
+        Formulas.update(formula()._id, {$set: {hopSchedule: hopSchedule}});
+    }
+});
+
+Template.hopScheduleList.hopSchedule = function() {
+    return formula().hopSchedule;
+};
+
+Template.hopScheduleList.events({
+    'click #remove-item': function() {
+        Formulas.update(formula()._id, {$pull: {hopSchedule: {grain: this.ingredient, amount: this.amount, time: this.time}}});
+    }
+});
+
+Template.boil.pastStarted = function() {
+    return Template.boil.started() || Template.boil.finished();
+}
+Template.boil.started = function() {
+    return !!formula().boil && !!formula().boil.startTime && !formula().boil.endTime;
+};
+
+Template.hopScheduleAdd.boilDisabled = function() {
+    return Template.boil.pastStarted() ? "disabled" : "";
+};
+Template.boil.finished = function() {
+    return !!formula().boil && !!formula().boil.endTime;
+};
+
+Template.boilEvents.boil = function() {
+    return formula().boil;
+};
+
+Template.boilEvents.boilEvents = function() {
+    return formula().boil.events; 
+}
+
+Template.boil.events({
+    'click button#start-boil': function() {
+        var boil = formula().boil || {};
+        boil.startTime = new Date();
+        Formulas.update(formula()._id, {$set: {boil: boil}});
+    },
+    'click button#finish-boil': function() {
+        var boil = formula().boil;
+        boil.endTime = new Date();
+        Formulas.update(formula()._id, {$set: {boil: boil}});
     }
 });
 
