@@ -1,20 +1,22 @@
 Mash 2 Keg
 ==========
 
-* track all the pieces of the brew process
-* easily keep detailed records of past brews
+* track all the steps of the brew process
+* keep detailed records of past brews
 
 Features
 ========
-None yet.
+Mash
+----
+* Add/Remove grain for grain bill
+* Strike water amounts & temperature
+* Track temperature throught the mash window
 
 Todo
 ====
 
 Mash
 ----
-* Add/Remove grain for grain bill
-* Strike water amounts & temperature
 * Timer
 
 Lautering
@@ -38,3 +40,8 @@ Primary Fermentation
 Secondary Fermentation
 ----------------------
 * Dry Hopping
+
+Architecture
+------------
+* Split into client and server
+* User accounts?
