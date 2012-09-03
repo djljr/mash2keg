@@ -72,6 +72,8 @@
     <h1>Boil</h1>
     {{> hopSchedule}}
     {{> boil}}
+    <h1>Fermentation</h1>
+    {{> gravity}}
     {{/if}}
 </div>
 </template>
@@ -308,4 +310,26 @@
 <template name="boilEvents">
     <div class="row"><div class="span1"><span class="label label-success">Started</span></div><div class="span4">at {{formatDateWithSeconds boil.startTime}}</div></div>
     {{#if boil.endTime}}<div class="row"><div class="span1"><span class="label label-success">Finished</span></div><div class="span4">at {{formatDateWithSeconds boil.endTime}}</div></div>{{/if}}
+</template>
+
+<template name="gravity">
+    <div class="row" id="gravity">
+        <div class="span6">
+            <div class="row">
+                <div class="span1">Original:</div>
+                <div class="span1"><input id="fermentation-og" type="text" class="span1" value="{{fermentationData.originalGravity}}"/></div>
+                <div class="span4"><p class="help-inline">Gravity reading from the wort after boil.</p></div>
+            </div>
+            <div class="row">
+                <div class="span1">Final:</div>
+                <div class="span1"><input id="fermentation-fg" type="text" class="span1" value="{{fermentationData.finalGravity}}"/></div>
+                <div class="span4"><p class="help-inline">Gravity reading from the beer after fermentation.</p></div>
+            </div>
+            <div class="row">
+                <div class="span1">ABV:</div>
+                <div class="span1">{{fermentationData.abv}}</div>
+                <div class="span4"><p class="help-inline">Alcohol content of the finished beer.</p></div>
+            </div>
+        </div>
+    </div>
 </template>
