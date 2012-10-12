@@ -44,7 +44,7 @@ Template.formulaList.events({
         var formula_id = Formulas.insert({'created': new Date()});
         Session.set('formula_id', formula_id);
     },
-    'click a#edit': function() {
+    'click a.edit': function() {
         Session.set('formula_id', this._id);
     }
 });
@@ -88,7 +88,7 @@ Template.grainBillList.bill = function() {
 };
 
 Template.grainBillList.events({
-    'click #remove-item': function() {
+    'click .remove-item': function() {
         Formulas.update(formula()._id, {$pull: {bill: {grain: this.grain, amount: this.amount}}});
     }
 });
@@ -112,7 +112,11 @@ Template.mashWater.unset = function() {
 
 Template.mashWater.amount = function() {
     if(formula().mashInData && formula().mashInData.ratio) {
-        return formula().mashInData.ratio * grainBillWeight();
+        var amount = { };
+        amount.qts = Math.round(formula().mashInData.ratio * grainBillWeight() * 100) / 100;
+        amount.gallons = Math.round(amount.qts * 0.25 * 100) / 100;
+        amount.cups = Math.round(amount.qts * 4 * 100) / 100;
+        return amount;
     }
 };
 
@@ -199,10 +203,10 @@ Template.grainBillAdd.mashDisabled = function() {
     return Template.mash.pastStarted() ? "disabled" : "";
 };
 Template.mashWater.mashDisabled = function() {
-    return Template.mash.pastStarted() ? "disabled" : "";
+    return ""; //Template.mash.pastStarted() ? "disabled" : "";
 };
 Template.mashIn.mashDisabled = function() {
-    return Template.mash.pastStarted() ? "disabled" : "";
+    return ""; //Template.mash.pastStarted() ? "disabled" : "";
 };
 Template.mash.finished = function() {
     return !!formula().mash && !!formula().mash.endTime;
@@ -251,7 +255,7 @@ Template.hopScheduleList.hopSchedule = function() {
 
 Template.hopScheduleList.events({
     'click #remove-item': function() {
-        Formulas.update(formula()._id, {$pull: {hopSchedule: {grain: this.ingredient, amount: this.amount, time: this.time}}});
+        Formulas.update(formula()._id, {$pull: {hopSchedule: {ingredient: this.ingredient, amount: this.amount, time: this.time}}});
     }
 });
 
@@ -263,7 +267,7 @@ Template.boil.started = function() {
 };
 
 Template.hopScheduleAdd.boilDisabled = function() {
-    return Template.boil.pastStarted() ? "disabled" : "";
+    return ""; //Template.boil.pastStarted() ? "disabled" : "";
 };
 Template.boil.finished = function() {
     return !!formula().boil && !!formula().boil.endTime;
@@ -275,13 +279,45 @@ Template.boilEvents.boil = function() {
 
 Template.boilEvents.boilEvents = function() {
     return formula().boil.events; 
-}
+};
+
+Template.boil.canAddEvents = function() {
+    var boil = formula().boil;
+    return !boil.events || boil.events.length == 0;
+};
+Template.boil.addBoilEvents = function() {
+    var hopSchedule = formula().hopSchedule;
+    var boil = formula().boil;
+
+    var boilDuration = boil.duration || 60;
+
+    if(!hopSchedule || !boil) {
+        return;
+    }
+
+    var events = boil.events || [];
+
+    for(var e in hopSchedule) {
+        var thisEvent = hopSchedule[e];
+        var eventTime = new Date(boil.startTime);
+        eventTime = new Date(eventTime.getTime() + (boilDuration - thisEvent.time) * 60000);
+        var boilEvent = {type: "Addition", time: eventTime, detail: thisEvent.amount + ' oz of ' + thisEvent.ingredient};
+        events.push(boilEvent);
+    }
+    boil.events = events;
+    Formulas.update(formula()._id, {$set: {boil: boil}});
+};
 
 Template.boil.events({
     'click button#start-boil': function() {
         var boil = formula().boil || {};
+        var duration = $('#boil-duration').val();
         boil.startTime = new Date();
+        boil.duration = duration;
         Formulas.update(formula()._id, {$set: {boil: boil}});
+    },
+    'click button#boil-events': function() {
+        Template.boil.addBoilEvents();
     },
     'click button#finish-boil': function() {
         var boil = formula().boil;
