@@ -1,0 +1,24 @@
+
+<template name="formulaEdit">
+<div class="container" id="edit">
+    {{#if show}}
+    <div class="row">
+        {{> brewName}}
+    </div>
+    <h1>Formula</h1>
+    {{> formula}}
+    <h1>Mash</h1>
+    {{> mashIn}}
+    {{> mash}}
+    <h1>Boil</h1>
+    {{> hopSchedule}}
+    {{> boil}}
+    <h1>Fermentation</h1>
+    {{> gravity}}
+    {{/if}}
+</div>
+</template>
+
+<template name="brewName">
+    <p class="lead">Today we'll be brewing...<input type="text" id="amount" class="input-mini" value="{{formula.amount}}" {{mashDisabled}}/> gallons of <input id="name" type="text" value="{{formula.name}}" {{mashDisabled}}/></p>
+</template>

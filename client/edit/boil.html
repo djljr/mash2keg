@@ -1,0 +1,30 @@
+
+<template name="boil">
+    <h3>Boil</h3>
+    {{#if started}}
+    {{> boilEvents}}
+    <div class="row">
+        <div class="span1 offset4"><button type="button" class="btn btn-success" id="finish-boil">Finish</button></div>
+        {{#if canAddEvents}}
+        <div class="span2"><button type="button" class="btn btn-primary" id="boil-events">Add Boil Events</button></div>
+        {{/if}}
+    </div>
+    {{else}}
+        {{#if finished}}
+        {{> boilEvents}}
+        {{else}}
+        <div class="row">
+            <div class="span2"><input id="boil-duration" type="text" class="span1" value="{{boil.duration}}" /> Minutes</div>
+            <div class="span1"><button type="button" class="btn btn-primary" id="start-boil">Start</button></div>
+        </div>
+        {{/if}}
+    {{/if}}
+</template>
+
+<template name="boilEvents">
+    <div class="row"><div class="span1"><span class="label label-success">Started</span></div><div class="span4">at {{formatDateWithSeconds boil.startTime}}</div></div>
+    {{#each boilEvents}}
+    <div class="row"><div class="span1"><span class="label">{{type}}</span></div><div class="span2">at {{formatDateWithSeconds time}}</div><div class="span4">{{detail}}</div></div>
+    {{/each}}
+    {{#if boil.endTime}}<div class="row"><div class="span1"><span class="label label-success">Finished</span></div><div class="span4">at {{formatDateWithSeconds boil.endTime}}</div></div>{{/if}}
+</template>

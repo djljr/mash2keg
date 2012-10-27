@@ -1,0 +1,41 @@
+
+<template name="mashIn">
+    <h3>Mash-In</h3>
+    <div class="row">
+        <div class="span6">
+            <span>Tw = (.2/R)(T2 - T1) + T2</span>
+        </div>
+    </div>
+    <div class="row" id="mashTemp">
+        <div class="span6">
+            <div class="row">
+                <div class="span1 offset2">R</div>
+                <div class="span1">{{mashInData.ratio}}</div>
+                <div class="span2"><p class="help-inline">Ratio of water to grain in quarts per pound.</p></div>
+            </div>
+            <div class="row">
+                <div class="span1 offset2">T1</div>
+                <div class="span1"><input id="mash-t1" type="text" class="span1" value="{{mashInData.grainTemp}}" {{mashDisabled}}/></div>
+                <div class="span2"><p class="help-inline">The starting temperature of the grains.</p></div>
+            </div>
+            <div class="row">
+                <div class="span1 offset2">T2</div>
+                <div class="span1"><input id="mash-t2" type="text" class="span1" value="{{mashInData.targetTemp}}" {{mashDisabled}}/></div>
+                <div class="span2"><p class="help-inline">Target temperature of the mash.</p></div>
+            </div>
+            <div class="row">
+                <div class="span1 offset2">Tw</div>
+                <div class="span1">{{waterTemp}}</div>
+                <div class="span2"><p class="help-inline">Temperature of the water to add to the mash.</p></div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span1 offset2">
+            Notes:
+        </div>
+        <div class="span3">
+            <textarea id="mash-notes" rows="4" {{mashDisabled}}>{{mashInData.notes}}</textarea>
+        </div>
+    </div>
+</template>

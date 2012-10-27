@@ -1,0 +1,22 @@
+
+<template name="gravity">
+    <div class="row" id="gravity">
+        <div class="span6">
+            <div class="row">
+                <div class="span1">Original:</div>
+                <div class="span1"><input id="fermentation-og" type="text" class="span1" value="{{fermentationData.og.reading}}"/></div>
+                <div class="span4"><p class="help-inline">Gravity reading from the wort after boil.</p></div>
+            </div>
+            <div class="row">
+                <div class="span1">Final:</div>
+                <div class="span1"><input id="fermentation-fg" type="text" class="span1" value="{{fermentationData.fg.reading}}"/></div>
+                <div class="span4"><p class="help-inline">Gravity reading from the beer after fermentation.</p></div>
+            </div>
+            <div class="row">
+                <div class="span1">ABV:</div>
+                <div class="span1">{{fermentationData.abv}}</div>
+                <div class="span4"><p class="help-inline">Alcohol content of the finished beer.</p></div>
+            </div>
+        </div>
+    </div>
+</template>

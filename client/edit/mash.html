@@ -1,0 +1,32 @@
+
+<template name="mash">
+    <h3>Mash</h3>
+    {{#if started}}
+    {{> mashEvents}}
+    <div class="row">
+        <div class="span4">
+            <form class="form-inline">
+                <div class="input-prepend">
+                    <span class="add-on">Add Temperature Reading:</span><input type="text" id="mash-temp-add" class="span1" />
+                </div>
+                <button type="button" id="mash-temp-btn" class="btn btn-primary">Add</button>
+            </form>
+        </div>
+        <div class="span1"><button type="button" class="btn btn-success" id="finish-mash">Finish</button></div>
+    </div>
+    {{else}}
+        {{#if finished}}
+        {{> mashEvents}}
+        {{else}}
+        <button type="button" class="btn btn-primary" id="start-mash">Start</button>
+        {{/if}}
+    {{/if}}
+</template>
+
+<template name="mashEvents">
+    <div class="row"><div class="span1"><span class="label label-success">Started</span></div><div class="span4">at {{formatDateWithSeconds mash.startTime}}</div></div>
+    {{#each mashEvents}}
+    <div class="row"><div class="span1"><span class="label">{{type}}</span></div><div class="span2">at {{formatDateWithSeconds time}}</div><div class="span1">{{detail}}</div></div>
+    {{/each}}
+    {{#if mash.endTime}}<div class="row"><div class="span1"><span class="label label-success">Finished</span></div><div class="span4">at {{formatDateWithSeconds mash.endTime}}</div></div>{{/if}}
+</template>

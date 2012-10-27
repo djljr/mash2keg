@@ -1,0 +1,25 @@
+
+<template name="mashWater">
+    {{#if unset}}
+    <div class="control-group">
+        <label class="radio">
+            <input type="radio" name="water-ratio" value="1.25" />
+            {{precomputed.onePointTwoFive}} qts (1.25 qts/lb)
+        </label>
+        <label class="radio">
+            <input type="radio" name="water-ratio" value="1.5" />
+            {{precomputed.onePointFive}} qts (1.5 qts/lb)
+        </label>
+        <button type="button" id="water-set" class="btn btn-primary">Set</button>
+    </div>
+    {{else}}
+    <div class="row">
+        <div class="span6">
+            <p class="lead">{{amount.qts}} qts. |
+                            {{amount.gallons}} gal. |
+                            {{amount.cups}} cups
+              <button type="button" id="water-unset" class="btn btn-mini btn-link" {{mashDisabled}}>Unset</button></p>
+        </div>
+    </div>
+    {{/if}}
+</template>
