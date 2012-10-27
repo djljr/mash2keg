@@ -8,13 +8,23 @@
     <h1>Formula</h1>
     {{> formula}}
     <h1>Mash</h1>
-    {{> mashIn}}
-    {{> mash}}
+    <div class="hero-unit mash-in">
+        {{> mashIn}}
+    </div>
+    <div class="hero-unit mash">
+        {{> mash}}
+    </div>
     <h1>Boil</h1>
-    {{> hopSchedule}}
-    {{> boil}}
+    <div class="hero-unit hop-schedule">
+        {{> hopSchedule}}
+    </div>
+    <div class="hero-unit boil">
+        {{> boil}}
+    </div>
     <h1>Fermentation</h1>
-    {{> gravity}}
+    <div class="hero-unit fermentation">
+        {{> gravity}}
+    </div>
     {{/if}}
 </div>
 </template>

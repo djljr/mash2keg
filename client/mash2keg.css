@@ -5,3 +5,42 @@
 .formula-result {
     font-size: 16pt;
 }
+
+.hero-unit {
+    padding: 30px;
+    border: 6px solid;
+    background-color: white
+}
+
+.hero-unit p {
+    font-size: 14px;
+    line-height: 20px;
+}
+
+div.grain-bill {
+    border-color: #F6F513;
+}
+
+div.mash-water {
+    border-color: #ECE61A;
+}
+
+div.mash-in {
+    border-color: #D5BC26;
+}
+
+div.mash {
+    border-color: #BF923B;
+}
+
+div.hop-schedule {
+    border-color: #BF813A;
+}
+
+div.boil {
+    border-color: #BC6733;
+}
+
+div.fermentation {
+    border-color: #8D4C32;
+}
