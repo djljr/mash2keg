@@ -1,8 +1,8 @@
 Formulas = new Meteor.Collection("formulas");
 var allowAdmin = function(userId, doc) {
     var user = Meteor.users.findOne(userId);
-    var isAdmin = user.admin;
-    if(typeof(isAdmin) !== 'undefined') {
+    if(typeof(user) !== 'undefined') {
+        var isAdmin = user.admin;
         return isAdmin;
     }
     else {
