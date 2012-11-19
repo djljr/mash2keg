@@ -9,12 +9,17 @@ var formatDatePart = function(part) {
 };
 Handlebars.registerHelper("formatDate", function(date) {
     var date = new Date(date);
+    return date.getFullYear() + "-" + formatDatePart(date.getMonth() + 1) + "-" + formatDatePart(date.getDate());
+});
+Handlebars.registerHelper("formatDateTime", function(date) {
+    var date = new Date(date);
     return date.getFullYear() + "-" + formatDatePart(date.getMonth() + 1) + "-" + formatDatePart(date.getDate()) + " " + formatDatePart(date.getHours()) + ":" + formatDatePart(date.getMinutes());
 });
 Handlebars.registerHelper("formatDateWithSeconds", function(date) {
     var date = new Date(date);
     return date.getFullYear() + "-" + formatDatePart(date.getMonth() + 1) + "-" + formatDatePart(date.getDate()) + " " + formatDatePart(date.getHours()) + ":" + formatDatePart(date.getMinutes()) + ":" + formatDatePart(date.getSeconds());
 });
+
 Template.page.preserve({
     'input[id]': function (n) { 
       return n.id; 

@@ -44,3 +44,22 @@ div.boil {
 div.fermentation {
     border-color: #8D4C32;
 }
+
+div.tile {
+    padding: 5px;
+    background-color: #eee;
+    cursor: pointer;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
+div.list-title {
+    font-weight: bold;
+    font-size: 16pt;
+}
+
+div.list-date {
+    font-style: italic;
+    font-size: 10pt;
+}
