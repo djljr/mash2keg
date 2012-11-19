@@ -46,12 +46,15 @@ div.fermentation {
 }
 
 div.tile {
-    padding: 5px;
     background-color: #eee;
     cursor: pointer;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     border-radius: 5px;
+}
+
+div.tile-row {
+    margin-bottom: 30px;
 }
 
 div.list-title {

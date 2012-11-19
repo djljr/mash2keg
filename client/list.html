@@ -17,16 +17,16 @@
             <h1>Beers</h1>
         </div>
     </div>
-    {{#tile formulas size=3}}
-        <div class="span4 tile">
+    {{#tile formulas}}
+        <div class="span{{_spanWidth}} tile">
             <div class="row">
-                <div class="span4 list-title">{{name}}</div>
+                <div class="span{{_spanWidth}} list-title">{{name}}</div>
             </div>
             <div class="row">
-                <div class="span4 list-amount">{{amount}} gal.</div>
+                <div class="span{{_spanWidth}} list-amount">{{amount}} gal.</div>
             </div>
             <div class="row">
-                <div class="span4 list-date">{{formatDate created}}</div>
+                <div class="span{{_spanWidth}} list-date">{{formatDate created}}</div>
             </div>
         </div>
     {{/tile}}

@@ -28,11 +28,11 @@ Template.planning.tile = function(context, options) {
     var out = "";
     var i = 0;
     var size = context.count();
-    var rowSize = options.hash.size || 4;
-    var spanSize = 12 / rowSize;
+    var rowSize = 3;
+    var spanWidth = 12 / rowSize;
 
     var startRow = function() {
-        return "<div class=\"row\">";
+        return "<div class=\"row tile-row\">";
     };
     var endRow = function() {
         return "</div>"
@@ -48,6 +48,7 @@ Template.planning.tile = function(context, options) {
         if(divides(rowSize, i)) {
             out += startRow();
         }
+        item._spanWidth = spanWidth;
         out += options.fn(item);
         if(divides(rowSize, i+1) || isLast(i)) {
             out += endRow();
