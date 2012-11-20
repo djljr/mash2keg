@@ -51,10 +51,7 @@ div.tile {
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     border-radius: 5px;
-}
-
-div.tile-row {
-    margin-bottom: 30px;
+    margin-bottom: 5px;
 }
 
 div.list-title {
